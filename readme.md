@@ -2,14 +2,24 @@
 
 Tener java 17.
 Instalar desde: https://www.oracle.com/ar/java/technologies/downloads/#jdk17-windows
+Tener Node.js y npm
+Instalar desde: https://nodejs.org/en
 
 
 # Iniciar el Proyecto
 
-Para iniciar correr el siguiente comando:
+Para iniciar el backend correr el siguiente comando:
     
     ```
     ./mvnw spring-boot:run
+    ```
+Para iniciar el frontend correr los siguientes comandos:
+
+    ```
+    cd frontend/dssd-frontned
+    npm install (para instalar dependencias)
+    npm run dev
+
     ```
 
 
