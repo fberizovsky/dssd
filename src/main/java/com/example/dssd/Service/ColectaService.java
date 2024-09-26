@@ -14,21 +14,22 @@ import jakarta.transaction.Transactional;
 public class ColectaService {
 
     @Autowired
-    private ColectaRepository colectaRepositoryRepository;
+    private ColectaRepository colectaRepository;
 
 
     @Transactional
     public Colecta crearColecta(Colecta colecta) {
-        return colectaRepositoryRepository.save(colecta);
+        colecta.getItems().forEach(item -> item.setColecta(colecta));
+        return colectaRepository.save(colecta);
 
     }
 
     public List<Colecta> obtenerColectas() {
-        return colectaRepositoryRepository.findAll();
+        return colectaRepository.findAll();
     }
 
     public Colecta obtenerColecta(Long id) {
-        return colectaRepositoryRepository.findById(id).orElse(null);
+        return colectaRepository.findById(id).orElse(null);
     }
 
 
