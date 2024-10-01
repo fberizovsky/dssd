@@ -1,6 +1,7 @@
 package com.example.dssd.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ import com.example.dssd.Service.ColectaService;
 public class UserController {
     
     @Autowired
-    private ProcessManagement ProcessManagement;
+    private ProcessManagement processManagement;
 
 
     @PostMapping("/login")
@@ -30,6 +31,13 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
         }
     }
+    
+    @GetMapping("/count")
+    public ResponseEntity<Integer> count() {
+        int cantidad = processManagement.getCountProcess();
+        return ResponseEntity.ok(cantidad);
+    }
+ 
 
 }
 
