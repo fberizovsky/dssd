@@ -28,7 +28,12 @@ public class ColectaController {
         String id =ProcessManagement.getProcessId(""); // Completar con el nombre del proceso, no me acuerdo cual era
         String caseID = ProcessManagement.initiateProcess(id);
         ProcessManagement.setVariableByCase(caseID, "envioFormulario", "1", "java.lang.Integer"); // Pasarle la variable
+        String taskID = ProcessManagement.searchActivityByCase(caseID);
+        String userId = "1"; // H
+        ProcessManagement.assignTask(taskID, userId); // Habria q buscar el metodo para encontrar el id del usuario
+        ProcessManagement.completeActivity(taskID);
         return ResponseEntity.ok(colectaAGuardar);
+
         
     }
 
