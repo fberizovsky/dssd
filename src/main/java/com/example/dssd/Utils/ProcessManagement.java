@@ -9,6 +9,9 @@ import java.net.URL;
 import java.util.*;
 import org.springframework.stereotype.Component;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 @Component
 public class ProcessManagement {
     private static final String BASE_URL = "http://localhost:21329/bonita/"; // TODO: Cambiar URL, no se cual es
@@ -112,8 +115,10 @@ public class ProcessManagement {
 
     public static String getProcessId(String name) {
         String response = doRequest("GET", "API/bpm/process?f=name=" + name + "&p=0&c=1&d=activationState=ENABLED", null);
+        
         // Parsear JSON y devolver el ID
-        return "";
+        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
+        return jsonObject.get("id").getAsString();
     }
 
     public static int getCountProcess() {
@@ -123,7 +128,9 @@ public class ProcessManagement {
     }
 
     public static String initiateProcess(String id) {
-        return doRequest("POST", "API/bpm/process/" + id + "/instantiation", null);
+        String response =doRequest("POST", "API/bpm/process/" + id + "/instantiation", null);
+        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
+        return jsonObject.get("caseId").getAsString();
     }
 
     public static String setVariable(String caseId, String variable, String value, String type) {
@@ -136,11 +143,15 @@ public class ProcessManagement {
     }
 
     public static String assignTask(String taskId, String userId) {
-        return doRequest("PUT", "API/bpm/userTask/" + taskId, String.format("{\"assigned_id\": \"%s\"}", userId));
+        String response  =doRequest("PUT", "API/bpm/userTask/" + taskId, String.format("{\"assigned_id\": \"%s\"}", userId));
+        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
+        return jsonObject.get("id").getAsString();
     }
 
     public static String searchActivityByCase(String caseId) {
-        return doRequest("GET", "API/bpm/task?f=caseId=" + caseId, null);
+        String response =doRequest("GET", "API/bpm/task?f=caseId=" + caseId, null);
+        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
+        return jsonObject.get("id").getAsString();
     }
 
     public static String completeActivity(String taskId) {
