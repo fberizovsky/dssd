@@ -107,25 +107,23 @@ public class ProcessManagement {
         return doRequest("GET", "API/bpm/process?p=0&c=1000", null);
     }
 
-    public static String getProcessName(String id) {
-        String response = doRequest("GET", "API/bpm/process/" + id, null);
-        // Parsear JSON y devolver el nombre
-        return "";
-    }
+    // public static String getProcessName(String id) {
+    //     String response = doRequest("GET", "API/bpm/process/" + id, null);
+    //     // Parsear JSON y devolver el nombre
+    //     return "";
+    // }
 
     public static String getProcessId(String name) {
         String response = doRequest("GET", "API/bpm/process?f=name=" + name + "&p=0&c=1&d=activationState=ENABLED", null);
-        
-        // Parsear JSON y devolver el ID
         JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
         return jsonObject.get("id").getAsString();
     }
 
-    public static int getCountProcess() {
-        String response = doRequest("GET", "API/bpm/process?p=0&c=1000", null);
-        System.out.println("RESPUESTA:"+ response);
-        return 0;
-    }
+    // public static int getCountProcess() {
+    //     String response = doRequest("GET", "API/bpm/process?p=0&c=1000", null);
+    //     System.out.println("RESPUESTA:"+ response);
+    //     return 0;
+    // }
 
     public static String initiateProcess(String id) {
         String response =doRequest("POST", "API/bpm/process/" + id + "/instantiation", null);
@@ -158,13 +156,13 @@ public class ProcessManagement {
         return doRequest("POST", "API/bpm/userTask/" + taskId + "/execution", null);
     }
 
-    public static String getVariable(String taskId, String variable) {
-        String response = doRequest("GET", "API/bpm/caseVariable/" + taskId, null);
-        // Parsear JSON y devolver la variable
-        return "";
-    }
+    // public static String getVariable(String taskId, String variable) {
+    //     String response = doRequest("GET", "API/bpm/caseVariable/" + taskId, null);
+    //     // Parsear JSON y devolver la variable
+    //     return "";
+    // }
 
-    public static String getVariableByCase(String caseId, String variable) {
-        return getVariable(caseId, variable);
-    }
+    // public static String getVariableByCase(String caseId, String variable) {
+    //     return getVariable(caseId, variable);
+    // }
 }
