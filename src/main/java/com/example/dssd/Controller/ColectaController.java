@@ -1,5 +1,7 @@
 package com.example.dssd.Controller;
 
+import java.io.UnsupportedEncodingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,15 +23,16 @@ public class ColectaController {
 
 
     @PostMapping
-    public ResponseEntity<?> crearColecta(@RequestBody Colecta colecta) {
+    public ResponseEntity<?> crearColecta(@RequestBody Colecta colecta) throws UnsupportedEncodingException {
         Colecta colectaAGuardar = colectaService.crearColecta(colecta);
         // Bonita api
         ProcessManagement.login("walter.bates", "bpm"); // Revisar si esta bien el usuario y contraseña
-        String id =ProcessManagement.getProcessId(""); // Completar con el nombre del proceso, no me acuerdo cual era
+        String id =ProcessManagement.getProcessId("recoleccion de materiales"); // Completar con el nombre del proceso, no me acuerdo cual era
+        System.out.println("id: " + id);
         String caseID = ProcessManagement.initiateProcess(id);
-        ProcessManagement.setVariableByCase(caseID, "envioFormulario", "1", "java.lang.Integer"); // Pasarle la variable
+        ProcessManagement.setVariableByCase(caseID, "formularioCargado", "true", "java.lang.Boolean"); // Pasarle la variable
         String taskID = ProcessManagement.searchActivityByCase(caseID);
-        String userId = "1"; // Habria q buscar el metodo para encontrar el id del usuario
+        String userId = "25"; // Habria q buscar el metodo para encontrar el id del usuario
         ProcessManagement.assignTask(taskID, userId); 
         ProcessManagement.completeActivity(taskID);
         return ResponseEntity.ok(colectaAGuardar);

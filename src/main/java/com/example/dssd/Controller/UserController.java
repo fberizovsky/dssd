@@ -32,11 +32,11 @@ public class UserController {
         }
     }
     
-    @GetMapping("/count")
-    public ResponseEntity<Integer> count() {
-        int cantidad = processManagement.getCountProcess();
-        return ResponseEntity.ok(cantidad);
-    }
+    //@GetMapping("/count")
+    //public ResponseEntity<Integer> count() {
+    //    int cantidad = processManagement.getCountProcess();
+    //    return ResponseEntity.ok(cantidad);
+    //}
  
 
 }

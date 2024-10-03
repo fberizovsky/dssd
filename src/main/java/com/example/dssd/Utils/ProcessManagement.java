@@ -1,14 +1,16 @@
 package com.example.dssd.Utils;
-
+import java.net.URLEncoder;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import org.springframework.stereotype.Component;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -73,6 +75,7 @@ public class ProcessManagement {
     private static String doRequest(String method, String endpoint, String postData) {
         try {
             URL url = new URL(BASE_URL + endpoint);
+            System.out.println("URL:"+url);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(method);
             String cookieHeader = sessionCookie;
@@ -80,12 +83,23 @@ public class ProcessManagement {
                 cookieHeader += "; " + sessionCookie2;
             }
             conn.setRequestProperty("Cookie", cookieHeader);
+            String sessionCookie3 = sessionCookie2;
+            sessionCookie3 = sessionCookie3.split("=")[1];
+            System.out.println("COOKIE DE SESIÓN bonita: " + sessionCookie3);
+            conn.setRequestProperty("X-Bonita-API-Token",sessionCookie3);
 
             if ("POST".equals(method) && postData != null) {
                 conn.setDoOutput(true);
                 try (OutputStream os = conn.getOutputStream()) {
                     os.write(postData.getBytes());
                 }
+            }else{ if ("PUT".equals(method) && postData != null) {
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setDoOutput(true);
+                try (OutputStream os = conn.getOutputStream()) {
+                    os.write(postData.getBytes());
+                }
+            }
             }
 
             StringBuilder response = new StringBuilder();
@@ -113,10 +127,18 @@ public class ProcessManagement {
     //     return "";
     // }
 
-    public static String getProcessId(String name) {
-        String response = doRequest("GET", "API/bpm/process?f=name=" + name + "&p=0&c=1&d=activationState=ENABLED", null);
-        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
-        return jsonObject.get("id").getAsString();
+    public static String getProcessId(String name) throws UnsupportedEncodingException {
+        String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8.toString());
+        String response = doRequest("GET", "API/bpm/process?f=name=" + encodedName + "&p=0&c=1&d=activationState=ENABLED", null);
+
+        JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
+
+        if (jsonArray.size() > 0) {
+            JsonObject process = jsonArray.get(0).getAsJsonObject();
+            return process.get("id").getAsString();
+        }
+
+        throw new RuntimeException("No process found with name: " + name);
     }
 
     // public static int getCountProcess() {
@@ -132,7 +154,8 @@ public class ProcessManagement {
     }
 
     public static String setVariable(String caseId, String variable, String value, String type) {
-        String postData = String.format("{\"%s\": {\"value\": \"%s\", \"type\": \"%s\"}}", variable, value, type);
+        String postData = String.format("{\"value\": \"%s\", \"type\": \"%s\"}",value, type);
+        System.out.println("POSTDATA:" + postData);
         return doRequest("PUT", "API/bpm/caseVariable/" + caseId + "/" + variable, postData);
     }
 
@@ -140,16 +163,19 @@ public class ProcessManagement {
         return setVariable(caseId, variable, value, type);
     }
 
-    public static String assignTask(String taskId, String userId) {
-        String response  =doRequest("PUT", "API/bpm/userTask/" + taskId, String.format("{\"assigned_id\": \"%s\"}", userId));
-        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
-        return jsonObject.get("id").getAsString();
+    public static void assignTask(String taskId, String userId) {
+        doRequest("PUT", "API/bpm/userTask/" + taskId, String.format("{\"assigned_id\": \"%s\"}", userId));
     }
 
     public static String searchActivityByCase(String caseId) {
         String response =doRequest("GET", "API/bpm/task?f=caseId=" + caseId, null);
-        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
-        return jsonObject.get("id").getAsString();
+        JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
+        if (jsonArray.size() > 0) {
+            JsonObject process = jsonArray.get(0).getAsJsonObject();
+            return process.get("id").getAsString();
+        }
+
+        throw new RuntimeException("No process found with caseID: " + caseId);
     }
 
     public static String completeActivity(String taskId) {
