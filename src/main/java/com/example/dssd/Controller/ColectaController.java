@@ -30,7 +30,8 @@ public class ColectaController {
         String id =ProcessManagement.getProcessId("recoleccion de materiales"); // Completar con el nombre del proceso, no me acuerdo cual era
         System.out.println("id: " + id);
         String caseID = ProcessManagement.initiateProcess(id);
-        ProcessManagement.setVariableByCase(caseID, "formularioCargado", "true", "java.lang.Boolean"); // Pasarle la variable
+        ProcessManagement.setVariableByCase(caseID, "formularioCargado", "true", "java.lang.Boolean");
+        ProcessManagement.setVariableByCase(caseID, "datosCorrectos", "false", "java.lang.Boolean");  // Pasarle la variable
         String taskID = ProcessManagement.searchActivityByCase(caseID);
         String userId = "25"; // Habria q buscar el metodo para encontrar el id del usuario
         ProcessManagement.assignTask(taskID, userId); 
