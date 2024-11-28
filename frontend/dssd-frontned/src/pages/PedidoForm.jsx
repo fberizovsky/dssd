@@ -4,7 +4,8 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import axios from 'axios';
-import { items } from '../data/Items';// Importa la lista de items desde el archivo correspondiente
+import { items } from '../data/Items';
+import config from '../config/config';
 
 const PedidoForm = () => {
   const { control, formState: { errors }, handleSubmit, reset } = useForm({
@@ -32,7 +33,7 @@ const PedidoForm = () => {
     const token = localStorage.getItem('token'); // O donde hayas almacenado la token
 
     axios.post(
-    'http://localhost:8080/api/orden',
+    `${config.BASE_URL}/api/orden`,
     formData,
     {
         headers: {

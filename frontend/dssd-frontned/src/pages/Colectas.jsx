@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import config from '../config/config';
 
 const Colectas = () => {
   const [colectas, setColectas] = useState([]);
@@ -7,7 +8,7 @@ const Colectas = () => {
   useEffect(() => {
     const fetchColectas = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/colectas');
+        const response = await axios.get(`${config.BASE_URL}/api/colectas`);
         setColectas(response.data);
       } catch (error) {
         console.error('Error fetching colectas:', error);

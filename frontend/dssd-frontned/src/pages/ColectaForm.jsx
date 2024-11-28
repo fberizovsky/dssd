@@ -5,6 +5,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { items } from '../data/Items';
 import axios from 'axios';
+import config from '../config/config';
 
 const ColectaForm = () => {
     const [depositos, setDepositos] = useState([]);
@@ -21,7 +22,7 @@ const ColectaForm = () => {
 
     // Obtener lista de depósitos desde la API
     useEffect(() => {
-        axios.get('http://localhost:8080/api/comunalDeposit')
+        axios.get(`${config.BASE_URL}/api/comunalDeposit`)
             .then((response) => {
                 setDepositos(response.data); // Suponiendo que devuelve un array de depósitos
             })
@@ -45,7 +46,7 @@ const ColectaForm = () => {
         console.log("Datos enviados:", formData); // Verifica los datos antes de enviarlos
         
         // Envía los datos al backend
-        axios.post('http://localhost:8080/api/colecta', formData)
+        axios.post(`${config.BASE_URL}/api/colecta`, formData)
             .then((response) => {
                 console.log('Datos enviados correctamente', response);
                 reset(defaultValues); // Resetea el formulario con los valores predeterminados

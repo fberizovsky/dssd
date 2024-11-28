@@ -1,6 +1,7 @@
 import axios from "axios";
+import config from '../config/config';
 
-const API_URL = "http://localhost:8080/auth";
+const API_URL = `${config.BASE_URL}/auth`;
 //const API_URL = "https://entrega3dssd.onrender.com/auth"; // Cambia esto por la URL de tu API
 
 // Función para iniciar sesión
